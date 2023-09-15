@@ -17,7 +17,7 @@ export default function MapScreen() {
   const navigation = useNavigation(); // Hook de navegação para permitir a navegação para outras telas
   const [visible, setVisible] = useState(false); // Estado para controlar a visibilidade do menu
   const [searchText, setSearchText] = useState(''); // Adição do estado searchText
-  const [userInteraction, setUserInteraction] = useState(false);
+  const [userInteraction, setUserInteraction] = useState(false);//Interação do usuário
   const [region, setRegion] = useState({
     latitude: -23.08575,
     longitude: -47.20243,
@@ -44,6 +44,7 @@ export default function MapScreen() {
 
   // Função para lidar com a seleção de um lugar no Google Places Autocomplete
   const handlePlaceSelect = (data, details) => {
+    console.log(details);
     if (details && details.geometry && details.geometry.location) {
       const { lat, lng } = details.geometry.location;
       setRegion({
@@ -142,6 +143,7 @@ const styles = StyleSheet.create({
       top: 20,
       width: '100%',
       paddingHorizontal: 16,
+      zIndex:2,
     },
     textInputContainer: {
       backgroundColor: 'rgba(255,255,255,0.8)',
@@ -163,7 +165,7 @@ const styles = StyleSheet.create({
   },
   menuButton: {
     position: 'absolute',
-    top: 70,
+    top: 80,
     left: 20,
     backgroundColor: '#8A2BE2',
     padding: 10,
