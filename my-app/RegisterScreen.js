@@ -1,24 +1,23 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-const RegisterScreen = () => {
+const RegisterScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [cpf, setCpf] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-// -----------------------------------------------------------------------------------------------------------------------------------------------------------
-const validarCPF = () => {
-    // Remove caracteres não numéricos
+//----------------------------------------------------------------------------------------------------------------------------------------
+
+  const validarCPF = () => {
     const cpfLimpo = cpf.replace(/\D/g, '');
 
     if (cpfLimpo.length !== 11) {
-      alert('CPF inválido. Por favor, insira 11 dígitos.');
+      alert('CPF inválido.');
       return false;
     }
 
-    // Calcula os dígitos verificadores
     let soma = 0;
     for (let i = 0; i < 9; i++) {
       soma += parseInt(cpfLimpo.charAt(i)) * (10 - i);
@@ -48,10 +47,9 @@ const validarCPF = () => {
     return true;
   };
 
-//------------------------------------------------------------------------------------------------------------------------------------------------
+  //--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
   const handleRegister = () => {
-    // Implemente a lógica de registro aqui
     if (!email || !name || !cpf || !password || !confirmPassword) {
       alert('Por favor, preencha todos os campos.');
       return;
@@ -69,15 +67,15 @@ const validarCPF = () => {
     }
 
     if (!validarCPF()) {
-        return;
-      }
+      return;
+    }
 
-    // Lógica de registro bem-sucedida
     alert('Registro bem-sucedido!');
-    // Adicione a navegação para a próxima tela, se necessário
   };
 
- //-------------------------------------------------------------------------------------------------------------------------------------------------------------
+  const handleLoginNavigation = () => {
+    navigation.navigate('Login'); // Certifique-se de que 'LoginScreen' corresponde ao nome de sua tela de login
+  };
 
   return (
     <View style={styles.container}>
@@ -119,12 +117,21 @@ const validarCPF = () => {
       <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
         <Text style={styles.registerText}>Registrar</Text>
       </TouchableOpacity>
+
+    
+      <View style={styles.loginContainer}>
+        <Text style={styles.loginText}>Já possui uma conta?</Text>
+        <TouchableOpacity onPress={handleLoginNavigation}>
+          <Text style={styles.loginLink}>Entrar</Text>
+        </TouchableOpacity>
+      </View>
+
+
+
     </View>
   );
 }
 
-
-//--------------------------------------------------------------------------------------------------------------------------------------------------------------
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -156,6 +163,26 @@ const styles = StyleSheet.create({
   registerText: {
     color: 'white',
     fontSize: 18,
+  },
+
+  loginContainer: {
+    flexDirection: 'row',
+    marginTop: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  
+  loginText: {
+    marginTop: 10,
+    fontSize: 18,
+    textAlign: 'center',
+  },
+  loginLink: {
+    marginTop: 10,
+    fontSize: 18,
+    color: '#8A2BE2',
+    textDecorationLine: 'underline',
+    
   },
 });
 

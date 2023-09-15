@@ -41,6 +41,7 @@ const LoginScreen = () => {
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginText}>Entrar</Text>
       </TouchableOpacity>
+    
       <View style={styles.registerContainer}>
         <Text style={styles.registerText}>Precisa se registrar?</Text>
         <TouchableOpacity onPress={handleRegister}>
@@ -88,9 +89,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   registerText: {
+    fontSize: 18,
     marginRight: 5,
   },
   registerLink: {
+    fontSize: 18,
     color: '#8A2BE2',
     textDecorationLine: 'underline',
   },
