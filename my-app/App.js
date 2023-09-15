@@ -8,11 +8,18 @@ import { createStackNavigator } from '@react-navigation/stack';
 // Importando o componente PaperProvider do react-native-paper para estilização
 import { Provider as PaperProvider } from 'react-native-paper';
 
+//Importando serviço de geocodificação
+import Geocoder from 'react-native-geocoding';
+Geocoder.init('AIzaSyCVa4H3UiBHTefbW5FVFkVEUi6tMydyets');
+
+
+
 // Importando os componentes de outras telas
 import LoginScreen from './LoginScreen';
 import MapScreen from './MapScreen';
 import ReportProblemScreen from './ReportProblemScreen';
 import RegisterScreen from './RegisterScreen';
+
 
 // Criando uma pilha de navegação usando createStackNavigator
 const Stack = createStackNavigator();
