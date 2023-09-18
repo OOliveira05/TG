@@ -1,22 +1,38 @@
+// Importando os módulos necessários do React Native e outras bibliotecas
 import React, { useState, useEffect  } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { useNavigation } from '@react-navigation/native'; // Hook de navegação
 import * as Location from 'expo-location'; // Importando a biblioteca de localização do Expo
 
-
+// Definindo o componente funcional MapScreen
 const MapScreen = () => {
+  
+  // Estado para controlar a interação do usuário com o mapa
   const [userInteraction, setUserInteraction] = useState(false);
+  
+  // Estado para armazenar a localização atual
+  const [currentLocation, setCurrentLocation] = useState(null)
+  
+  // Estado para armazenar a região do mapa
   const [region, setRegion] = useState({
     latitude: -23.08575,
     longitude: -47.20245,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
-  const [zoomLevel, setZoomLevel] = useState(12); // Novo estado para controlar o zoom
-  const navigation = useNavigation(); // Hook de navegação para permitir a navegação para outras telas
-
+  
+  // Novo estado para controlar o zoom
+  const [zoomLevel, setZoomLevel] = useState(12);
+  
+  // Hook de navegação para permitir a navegação para outras telas
+  const navigation = useNavigation(); 
+  
+  // Estado para a localização selecionada
+  const [selectedLocation, setSelectedLocation] = useState(null); 
+  
+  // useEffect para obter a localização atual quando o componente é montado
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -24,16 +40,29 @@ const MapScreen = () => {
         console.error('Permissão de localização não concedida');
         return;
       }
-
       let location = await Location.getCurrentPositionAsync({});
       setRegion({
         ...region,
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
       });
+
+      setCurrentLocation({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,});
     })();
   }, []);
 
+  // useEffect para controlar o tempo de interação do usuário com o mapa
+  useEffect(() => {
+    const mapInteractionTimeout = setTimeout(() => {
+      setUserInteraction(false);
+    }, 2000);
+  
+    return () => clearTimeout(mapInteractionTimeout);
+  }, [userInteraction]);
+
+  // Função para obter a localização atual do usuário
   const handleGetLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
@@ -47,13 +76,25 @@ const MapScreen = () => {
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
     });
-    setZoomLevel(0);
+    setZoomLevel(1);
+
+    setCurrentLocation({
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+    });
+
+    setSelectedLocation({
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+    });
   };
 
+  // Função para navegar para a tela de relatório de problema
   const handleReportProblem = () => {
     navigation.navigate('ReportProblem');
   };
 
+  // Renderização do componente
   return (
     <View style={styles.container}>
       <MapView
@@ -65,12 +106,27 @@ const MapScreen = () => {
           longitudeDelta: zoomLevel * 0.01, // Atualiza o delta da longitude com base no zoomLevel
         }}
         onRegionChange={() => setUserInteraction(true)}
-        onRegionChangeComplete={(r) => {
+        onRegionChangeComplete={() => {
           if (!userInteraction) {
-            setZoomLevel(12); // Restaura o zoom quando o usuário não estiver interagindo
+            setZoomLevel(1); // Restaura o zoom quando o usuário não estiver interagindo
           }
         }}
-      />
+      >
+        {currentLocation && (
+          <Marker
+            coordinate={currentLocation}
+            title="Localização Atual"
+            description="Você está aqui"
+          />
+        )}
+         {selectedLocation && (
+          <Marker
+            coordinate={selectedLocation}
+            title="Localização Selecionada"
+            description="Endereço Pesquisado"
+          />
+        )}
+      </MapView>
       <View style={styles.autocomplete.container}>
         <GooglePlacesAutocomplete
           placeholder="Digite o endereço"
@@ -87,6 +143,11 @@ const MapScreen = () => {
               longitudeDelta: zoomLevel * 0.01, // Atualiza o delta da longitude com base no zoomLevel
             });
             setZoomLevel(0.1); // Define um zoom maior ao selecionar um endereço
+            setSelectedLocation({
+              latitude: details.geometry.location.lat,
+              longitude: details.geometry.location.lng,
+            });
+
           }}
           query={{
             key: 'AIzaSyCVa4H3UiBHTefbW5FVFkVEUi6tMydyets',
@@ -125,6 +186,7 @@ const MapScreen = () => {
   );
 }
 
+// Definindo os estilos do componente
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -158,14 +220,14 @@ const styles = StyleSheet.create({
   },
   getLocationButton: {
     position: 'absolute',
-    bottom: 80, // Ajuste conforme necessário
+    bottom: 80, 
     left: 20,
     right: 20,
     height: 40,
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#4CAF50', // Cor do botão
+    backgroundColor: '#4CAF50', 
   },
   getLocationButtonText: {
     color: 'white',
@@ -173,4 +235,5 @@ const styles = StyleSheet.create({
   },
 });
 
+// Exportando o componente MapScreen
 export default MapScreen;
