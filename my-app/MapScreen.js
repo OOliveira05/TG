@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { useNavigation } from '@react-navigation/native'; // Hook de navegação
+import * as Location from 'expo-location'; // Importando a biblioteca de localização do Expo
+
 
 const MapScreen = () => {
   const [userInteraction, setUserInteraction] = useState(false);
@@ -14,6 +16,39 @@ const MapScreen = () => {
   });
   const [zoomLevel, setZoomLevel] = useState(12); // Novo estado para controlar o zoom
   const navigation = useNavigation(); // Hook de navegação para permitir a navegação para outras telas
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.error('Permissão de localização não concedida');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setRegion({
+        ...region,
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+    })();
+  }, []);
+
+  const handleGetLocation = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      console.error('Permissão de localização não concedida');
+      return;
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    setRegion({
+      ...region,
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+    });
+    setZoomLevel(0);
+  };
 
   const handleReportProblem = () => {
     navigation.navigate('ReportProblem');
@@ -83,6 +118,9 @@ const MapScreen = () => {
       <TouchableOpacity style={styles.reportButton} onPress={handleReportProblem}>
         <Text style={styles.reportButtonText}>Reportar problema</Text>
       </TouchableOpacity>
+      <TouchableOpacity style={styles.getLocationButton} onPress={handleGetLocation}>
+        <Text style={styles.getLocationButtonText}>Obter Localização Atual</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -115,6 +153,21 @@ const styles = StyleSheet.create({
     backgroundColor: '#8A2BE2',
   },
   reportButtonText: {
+    color: 'white',
+    fontSize: 18,
+  },
+  getLocationButton: {
+    position: 'absolute',
+    bottom: 80, // Ajuste conforme necessário
+    left: 20,
+    right: 20,
+    height: 40,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#4CAF50', // Cor do botão
+  },
+  getLocationButtonText: {
     color: 'white',
     fontSize: 18,
   },
