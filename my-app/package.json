@@ -23,7 +23,8 @@
     "react-native-maps": "1.7.1",
     "react-native-paper": "^5.10.4",
     "react-native-picker-select": "^8.1.0",
-    "react-native-screens": "^3.25.0"
+    "react-native-screens": "^3.25.0",
+    "@expo/vector-icons": "^13.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

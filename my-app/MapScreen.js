@@ -5,6 +5,8 @@ import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { useNavigation } from '@react-navigation/native'; // Hook de navegação
 import * as Location from 'expo-location'; // Importando a biblioteca de localização do Expo
+import { Ionicons } from '@expo/vector-icons';
+
 
 // Definindo o componente funcional MapScreen
 const MapScreen = () => {
@@ -53,14 +55,7 @@ const MapScreen = () => {
     })();
   }, []);
 
-  // useEffect para controlar o tempo de interação do usuário com o mapa
-  useEffect(() => {
-    const mapInteractionTimeout = setTimeout(() => {
-      setUserInteraction(false);
-    }, 2000);
-  
-    return () => clearTimeout(mapInteractionTimeout);
-  }, [userInteraction]);
+ 
 
   // Função para obter a localização atual do usuário
   const handleGetLocation = async () => {
@@ -179,9 +174,12 @@ const MapScreen = () => {
       <TouchableOpacity style={styles.reportButton} onPress={handleReportProblem}>
         <Text style={styles.reportButtonText}>Reportar problema</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.getLocationButton} onPress={handleGetLocation}>
-        <Text style={styles.getLocationButtonText}>Obter Localização Atual</Text>
-      </TouchableOpacity>
+      
+
+      <TouchableOpacity style={styles.locationIcon} onPress={handleGetLocation}>
+      <Ionicons name="locate" size={60} color="white" />
+    </TouchableOpacity>
+
     </View>
   );
 }
@@ -232,6 +230,19 @@ const styles = StyleSheet.create({
   getLocationButtonText: {
     color: 'white',
     fontSize: 18,
+  },
+
+  locationIcon: {
+    position: 'relative',
+    top: 750,
+    left: 400,
+    width: 70,
+    height: 70,
+    borderRadius: 70,
+    backgroundColor: '#8A2BE2',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex:2,
   },
 });
 
