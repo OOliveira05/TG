@@ -1,38 +1,85 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, ScrollView, TouchableOpacity, Text } from 'react-native';
+import { View, TextInput, StyleSheet, TouchableOpacity, Text, Image } from 'react-native';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
-const ReportProblemScreen = () => {
-  // Definindo estados para controlar os inputs
+const ReportProblemScreen = ({ route }) => {
   const [location, setLocation] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
-  const [photos, setPhotos] = useState([]);
+  const [photos, setPhotos] = useState(['https://via.placeholder.com/100']);
 
-  // Função para lidar com a ação de relatar um problema
   const handleReportProblem = () => {
     // Implemente a lógica para relatar o problema aqui
   };
 
-  // Função para lidar com a seleção de uma categoria
   const handleSelectCategory = (selectedCategory) => {
     setCategory(selectedCategory);
   };
 
-  // Função para lidar com a seleção de uma foto
   const handleSelectPhoto = () => {
     // Implemente a lógica para selecionar uma foto aqui
   };
 
-  // Lista de categorias disponíveis
   const categories = ['Categoria 1', 'Categoria 2', 'Categoria 3'];
 
+  const selectedAddress = route.params?.selectedAddress;
+  const initialLocationValue = selectedAddress ? selectedAddress : '';
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
+      <GooglePlacesAutocomplete
+        placeholder="Digite o endereço"
+        minLength={2}
+        autoFocus={false}
+        returnKeyType={'search'}
+        listViewDisplayed="auto"
+        fetchDetails={true}
+        onPress={(data, details = null) => {
+          setRegion({
+            latitude: details.geometry.location.lat,
+            longitude: details.geometry.location.lng,
+            latitudeDelta: zoomLevel * 0.01, // Atualiza o delta da latitude com base no zoomLevel
+            longitudeDelta: zoomLevel * 0.01, // Atualiza o delta da longitude com base no zoomLevel
+          });
+          setZoomLevel(0.1); // Define um zoom maior ao selecionar um endereço
+          setSelectedLocation({
+            latitude: details.geometry.location.lat,
+            longitude: details.geometry.location.lng,
+          });
+
+        }}
+        query={{
+          key: 'AIzaSyCVa4H3UiBHTefbW5FVFkVEUi6tMydyets', // Substitua pela sua API Key do Google Maps
+          language: 'pt-BR',
+          components: 'country:br',
+        }}
+    
+        styles={{
+          textInputContainer: {
+            backgroundColor: 'rgba(255,255,255,0.8)',
+            borderTopWidth: 0,
+            borderBottomWidth: 0,
+            borderRadius: 8,
+            height: 48,
+          },
+          textInput: {
+            marginLeft: 0,
+            marginRight: 0,
+            height: 38,
+            color: '#5d5d5d',
+            fontSize: 16,
+          },
+          predefinedPlacesDescription: {
+            color: '#1faadb',
+          },
+        }}
+      />
       <TextInput
         style={styles.input}
         placeholder="Localização"
         value={location}
         onChangeText={setLocation}
+        defaultValue={initialLocationValue}
       />
       <TextInput
         style={styles.input}
@@ -59,11 +106,10 @@ const ReportProblemScreen = () => {
       <TouchableOpacity style={styles.reportButton} onPress={handleReportProblem}>
         <Text style={styles.reportButtonText}>Reportar Problema</Text>
       </TouchableOpacity>
-    </ScrollView>
+    </View>
   );
 }
 
-// Estilos para os componentes
 const styles = StyleSheet.create({
   container: {
     padding: 16,
@@ -75,6 +121,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     paddingLeft: 8,
     borderRadius: 50,
+    marginTop: 100, // Alterei 'top' para 'marginTop'
   },
   categoryButton: {
     height: 40,
