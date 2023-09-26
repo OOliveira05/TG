@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Text, StyleSheet, TouchableOpacity, Modal, Pressable } from 'react-native';
+import { View, TextInput, Text, StyleSheet, TouchableOpacity, Modal, Pressable, Image, ScrollView } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 
 const ReportProblemScreen = ({ route }) => {
+  const [selectedImage, setSelectedImage] = useState([]);
   const { selectedLocation } = route.params;
   const [location, setLocation] = useState(selectedLocation);
   const [address, setAddress] = useState({
@@ -62,7 +64,56 @@ const ReportProblemScreen = ({ route }) => {
     setModalVisible(false);
   }
 
+  const openImagePicker = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  
+    if (status !== 'granted') {
+      alert('Desculpe, precisamos da permissão para acessar sua galeria de fotos.');
+      return;
+    }
+  
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+  
+    if (!result.canceled) {
+      setSelectedImage([...selectedImage, result.uri]); // Use setSelectedImage to update the state
+    }
+  }
+  
+  
+
+  const openCamera = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+  
+    if (status !== 'granted') {
+      alert('Desculpe, precisamos da permissão para acessar a câmera.');
+      return;
+    }
+  
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      quality: 1,
+    });
+  
+    if (!result.canceled) {
+      setSelectedImage([...selectedImage, result.uri]); // Use setSelectedImage to update the state
+    }
+  }
+
+  const removeImage = (index) => {
+    const newImages = [...selectedImage];
+    newImages.splice(index, 1);
+    setSelectedImage(newImages);
+  }
+  
+  
+
   return (
+    <ScrollView>
+
     <View style={styles.locationInfo}>
       <View style={styles.inputContainer}>
         <Text style={styles.label}>CEP:</Text>
@@ -171,10 +222,35 @@ const ReportProblemScreen = ({ route }) => {
         </View>
       </Modal>
 
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Anexar Foto:</Text>
+        <TouchableOpacity onPress={openImagePicker} style={styles.categoryButton}>
+          <Text>{selectedImage ? 'Ver Foto' : 'Anexar'}</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Tirar Foto:</Text>
+        <TouchableOpacity onPress={openCamera} style={styles.categoryButton}>
+          <Text>{selectedImage ? 'Ver Foto' : 'Tirar Foto'}</Text>
+        </TouchableOpacity>
+      </View>
+
+      {selectedImage.map((imageUri, index) => ( 
+  <View key={index} style={styles.imageWrapper}> 
+    <Image source={{ uri: imageUri }} style={styles.selectedImage} /> 
+    <TouchableOpacity onPress={() => removeImage(index)} style={styles.removeButton}>
+      <Text style={styles.removeButtonText}>Remover</Text>
+    </TouchableOpacity>
+  </View>
+))}
+
 
     </View>
+    </ScrollView>
   );
 }
+
 
   const styles = StyleSheet.create({
     locationInfo: {
@@ -263,6 +339,35 @@ const ReportProblemScreen = ({ route }) => {
       width: '100%',
       alignItems: 'center',
       
+    },
+
+    imageContainer: {
+      alignItems: 'center',
+      marginTop: 10,
+    },
+    selectedImage: {
+      width: 150,
+      height: 150,
+      borderRadius: 10,
+      marginTop: 5,
+    },
+    imageWrapper: {
+      position: 'relative',
+    },
+  
+    removeButton: {
+      position: 'absolute',
+      top: 5,
+      right: 5,
+      backgroundColor: 'rgba(255,255,255,0.8)',
+      borderRadius: 5,
+      paddingVertical: 3,
+      paddingHorizontal: 8,
+    },
+  
+    removeButtonText: {
+      color: 'red',
+      fontSize: 12,
     },
 });
 
