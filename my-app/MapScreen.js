@@ -86,7 +86,7 @@ const MapScreen = () => {
 
   // Função para navegar para a tela de relatório de problema
   const handleReportProblem = () => {
-    navigation.navigate('ReportProblem');
+    navigation.navigate('ReportProblem', { selectedLocation });
   };
 
   // Renderização do componente
@@ -131,6 +131,14 @@ const MapScreen = () => {
           listViewDisplayed="auto"
           fetchDetails={true}
           onPress={(data, details = null) => {
+            if (details) {
+              setSelectedLocation({
+                latitude: details.geometry.location.lat,
+                longitude: details.geometry.location.lng,
+              });
+            } else {
+              setSelectedLocation(currentLocation);
+            }
             setRegion({
               latitude: details.geometry.location.lat,
               longitude: details.geometry.location.lng,
