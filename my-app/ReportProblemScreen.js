@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, TextInput, Text, StyleSheet, TouchableOpacity, Modal, Pressable } from 'react-native';
 
 const ReportProblemScreen = ({ route }) => {
   const { selectedLocation } = route.params;
@@ -13,8 +13,10 @@ const ReportProblemScreen = ({ route }) => {
     postalCode: '',
   });
 
-  const [cep, setCep] = useState(address.postalCode); // Inicializa com o valor de address.postalCode
+  const [cep, setCep] = useState(address.postalCode);
   const [problemDescription, setProblemDescription] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   useEffect(() => {
     if (location) {
@@ -49,6 +51,15 @@ const ReportProblemScreen = ({ route }) => {
         });
       })
       .catch(error => console.error('Erro ao obter dados de endereço:', error));
+  }
+
+  const openCategoryModal = () => {
+    setModalVisible(true);
+  }
+
+  const selectCategory = (category) => {
+    setSelectedCategory(category);
+    setModalVisible(false);
   }
 
   return (
@@ -123,51 +134,136 @@ const ReportProblemScreen = ({ route }) => {
           numberOfLines={4}
         />
       </View>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Categoria do Problema:</Text>
+        <TouchableOpacity onPress={openCategoryModal} style={styles.categoryButton}>
+          <Text>{selectedCategory || 'Selecione a categoria'}</Text>
+        </TouchableOpacity>
+      </View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Pressable onPress={() => selectCategory('Problema na estrada')} style={styles.modalOption}>
+              <Text>Problema na estrada</Text>
+            </Pressable>
+            <Pressable onPress={() => selectCategory('Iluminação Pública')} style={styles.modalOption}>
+              <Text>Iluminação Pública</Text>
+            </Pressable>
+            <Pressable onPress={() => selectCategory('Cuidados com Vegetação')} style={styles.modalOption}>
+              <Text>Cuidados com Vegetação</Text>
+            </Pressable>
+            <Pressable onPress={() => selectCategory('Cano estourado')} style={styles.modalOption}>
+              <Text>Cano estourado</Text>
+            </Pressable>
+            <Pressable onPress={() => setModalVisible(false)} style={styles.modalOptionCancel}>
+              <Text style = {{color: 'red'}}>Cancelar</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+
+
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  locationInfo: {
-    marginTop: 20,
-    marginLeft: 16,
-  },
-  inputContainer: {
-    marginBottom: 10,
-  },
-  label: {
-    marginBottom: 5,
-    fontWeight: 'bold',
-  },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    paddingLeft: 8,
-    borderRadius: 10,
-    width: '100%',
-  },
-  inputDescricao: {
-    height: 60,
-    borderColor: 'gray',
-    borderWidth: 1,
-    paddingLeft: 8,
-    borderRadius: 10,
-    width: '100%',
-  },
-  searchButton: {
-    padding: 10,
-    marginTop: 10,
-    alignItems: 'center',
-    borderRadius: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#8A2BE2',
-  },
-  searchButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
+  const styles = StyleSheet.create({
+    locationInfo: {
+      marginTop: 20,
+      marginLeft: 16,
+    },
+    inputContainer: {
+      marginBottom: 10,
+    },
+    label: {
+      marginBottom: 5,
+      fontWeight: 'bold',
+    },
+    input: {
+      height: 40,
+      borderColor: 'gray',
+      borderWidth: 1,
+      paddingLeft: 8,
+      borderRadius: 10,
+      width: '100%',
+    },
+    inputDescricao: {
+      height: 60,
+      borderColor: 'gray',
+      borderWidth: 1,
+      paddingLeft: 8,
+      borderRadius: 10,
+      width: '100%',
+    },
+    searchButton: {
+      padding: 10,
+      marginTop: 10,
+      alignItems: 'center',
+      borderRadius: 50,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#8A2BE2',
+    },
+    searchButtonText: {
+      color: '#fff',
+      fontWeight: 'bold',
+    },
+    categoryButton: {
+      height: 40,
+      borderColor: 'gray',
+      borderWidth: 1,
+      paddingLeft: 8,
+      borderRadius: 10,
+      width: '100%',
+      justifyContent: 'center',
+    },
+    centeredView: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 22,
+    },
+    modalView: {
+      margin: 20,
+      backgroundColor: 'white',
+      borderRadius: 10,
+      padding: 50,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+    },
+    modalOption: {
+      marginBottom: 30, // Espaçamento entre as opções
+      width: '100%',
+      alignItems: 'center',
+    },
+    divider: {
+      width: '100%',
+      height: 1,
+      backgroundColor: 'black', // Cor da divisória
+      marginVertical: 5, // Espaçamento vertical da divisória
+    },
+    modalOptionCancel: {
+      marginTop: 10, // Espaçamento entre a última opção e a divisória
+      width: '100%',
+      alignItems: 'center',
+      
+    },
 });
 
 export default ReportProblemScreen;
