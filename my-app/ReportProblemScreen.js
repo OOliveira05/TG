@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Text, StyleSheet } from 'react-native';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { View, TextInput, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 const ReportProblemScreen = ({ route }) => {
   const { selectedLocation } = route.params;
@@ -14,6 +13,9 @@ const ReportProblemScreen = ({ route }) => {
     postalCode: '',
   });
 
+  const [cep, setCep] = useState(address.postalCode); // Inicializa com o valor de address.postalCode
+  const [problemDescription, setProblemDescription] = useState('');
+
   useEffect(() => {
     if (location) {
       fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.latitude},${location.longitude}&key=AIzaSyCVa4H3UiBHTefbW5FVFkVEUi6tMydyets`)
@@ -26,142 +28,112 @@ const ReportProblemScreen = ({ route }) => {
             neighborhood: result.address_components[2].long_name,
             city: result.address_components[3].long_name,
             state: result.address_components[4].short_name,
-            postalCode: result.address_components[6].long_name
+            postalCode: result.address_components[6].long_name,
           });
+          setCep(result.address_components[6].long_name); // Atualiza o estado do CEP
         })
         .catch(error => console.error('Erro ao obter dados de geocodificação:', error));
     }
   }, [location]);
+
+  const searchByCep = () => {
+    fetch(`https://viacep.com.br/ws/${cep}/json/`)
+      .then(response => response.json())
+      .then(data => {
+        setAddress({
+          street: data.logradouro,
+          neighborhood: data.bairro,
+          city: data.localidade,
+          state: data.uf,
+          postalCode: data.cep,
+        });
+      })
+      .catch(error => console.error('Erro ao obter dados de endereço:', error));
+  }
+
   return (
-    <View style={styles.container}>
-      <View style={styles.autocomplete.container}>
-        <GooglePlacesAutocomplete
-          placeholder="Digite o endereço"
-          minLength={2}
-          autoFocus={false}
-          returnKeyType={'search'}
-          listViewDisplayed="auto"
-          fetchDetails={true}
-          onPress={(data, details = null) => {
-            setLocation({
-              latitude: details.geometry.location.lat,
-              longitude: details.geometry.location.lng,
-            });
-          }}
-          
-          query={{
-            key: 'AIzaSyCVa4H3UiBHTefbW5FVFkVEUi6tMydyets',
-            language: 'pt-BR',
-            components: 'country:br',
-          }}
-          currentLocation={false}
-          styles={{
-            textInputContainer: {
-              backgroundColor: 'rgba(255,255,255,0.8)',
-              borderTopWidth: 0,
-              borderBottomWidth: 0,
-              borderRadius: 8,
-              height: 48,
-            },
-            textInput: {
-              marginLeft: 0,
-              marginRight: 0,
-              height: 38,
-              color: '#5d5d5d',
-              fontSize: 16,
-            },
-            predefinedPlacesDescription: {
-              color: '#1faadb',
-            },
-          }}
+    <View style={styles.locationInfo}>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>CEP:</Text>
+        <TextInput
+          style={styles.input}
+          value={cep}
+          onChangeText={text => setCep(text)} // Atualiza o estado do CEP
+          placeholder="Digite o CEP"
+        />
+        <TouchableOpacity onPress={searchByCep} style={styles.searchButton}>
+          <Text style={styles.searchButtonText}>Buscar</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Rua:</Text>
+        <TextInput
+          style={styles.input}
+          value={address.street}
+          editable={false}
         />
       </View>
-      <View style={styles.locationInfo}>
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Rua:</Text>
-          <TextInput
-            style={styles.input}
-            value={address.street}
-            onChangeText={text => setAddress({ ...address, street: text })}
-            placeholder="Digite a rua"
-          />
-        </View>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Número:</Text>
-          <TextInput
-            style={styles.input}
-            value={address.number}
-            onChangeText={text => setAddress({ ...address, number: text })}
-            placeholder="Digite o número"
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Bairro:</Text>
-          <TextInput
-            style={styles.input}
-            value={address.neighborhood}
-            onChangeText={text => setAddress({ ...address, neighborhood: text })}
-            placeholder="Digite o bairro"
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Cidade:</Text>
-          <TextInput
-            style={styles.input}
-            value={address.city}
-            onChangeText={text => setAddress({ ...address, city: text })}
-            placeholder="Digite a cidade"
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Estado:</Text>
-          <TextInput
-            style={styles.input}
-            value={address.state}
-            onChangeText={text => setAddress({ ...address, state: text })}
-            placeholder="Digite o estado"
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>CEP:</Text>
-          <TextInput
-            style={styles.input}
-            value={address.postalCode}
-            onChangeText={text => setAddress({ ...address, postalCode: text })}
-            placeholder="Digite o CEP"
-          />
-        </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Número:</Text>
+        <TextInput
+          style={styles.input}
+          value={address.number}
+          onChangeText={text => setAddress({ ...address, number: text })}
+          placeholder="Digite o número"
+        />
       </View>
 
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Bairro:</Text>
+        <TextInput
+          style={styles.input}
+          value={address.neighborhood}
+          editable={false}
+        />
+      </View>
 
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Cidade:</Text>
+        <TextInput
+          style={styles.input}
+          value={address.city}
+          editable={false}
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Estado:</Text>
+        <TextInput
+          style={styles.input}
+          value={address.state}
+          editable={false}
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Descrição do Problema:</Text>
+        <TextInput
+          style={styles.inputDescricao}
+          value={problemDescription}
+          onChangeText={text => setProblemDescription(text)}
+          placeholder="Descreva o problema"
+          multiline={true}
+          numberOfLines={4}
+        />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  autocomplete: {
-    container: {
-      position: 'absolute',
-      top: 20,
-      width: '100%',
-      paddingHorizontal: 16,
-      zIndex: 2,
-    },
-  },
   locationInfo: {
     marginTop: 20,
     marginLeft: 16,
   },
   inputContainer: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   label: {
     marginBottom: 5,
@@ -175,9 +147,27 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: '100%',
   },
-  
- 
+  inputDescricao: {
+    height: 60,
+    borderColor: 'gray',
+    borderWidth: 1,
+    paddingLeft: 8,
+    borderRadius: 10,
+    width: '100%',
+  },
+  searchButton: {
+    padding: 10,
+    marginTop: 10,
+    alignItems: 'center',
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#8A2BE2',
+  },
+  searchButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
 });
 
-
-export default ReportProblemScreen ;
+export default ReportProblemScreen;
