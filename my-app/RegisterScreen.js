@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import axios from 'axios';
+
+
+
+
+
 
 const RegisterScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -7,6 +13,10 @@ const RegisterScreen = ({ navigation }) => {
   const [cpf, setCpf] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [telefone, setTelefone] = useState('');
+ 
+  
+
 
 //----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -49,8 +59,8 @@ const RegisterScreen = ({ navigation }) => {
 
   //--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  const handleRegister = () => {
-    if (!email || !name || !cpf || !password || !confirmPassword) {
+  const handleRegister = async () => {
+    if (!email || !name || !cpf || !password || !confirmPassword || !telefone) {
       alert('Por favor, preencha todos os campos.');
       return;
     }
@@ -70,8 +80,31 @@ const RegisterScreen = ({ navigation }) => {
       return;
     }
 
-    alert('Registro bem-sucedido!');
+    const userData = {
+      nome: name,
+      cpf: parseInt(cpf),
+      email,
+      telefone: parseInt(telefone),
+      senha: password
+    };
+
+    try {
+      const response = await axios.post(`${API_URL}/pessoa`, userData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status === 200) {
+        alert('Registro bem-sucedido!');
+      } else {
+        alert('Erro ao registrar. Por favor, tente novamente.');
+      }
+    } catch (error) {
+      console.error('Erro:', error);
+    }
   };
+
 
   const handleLoginNavigation = () => {
     navigation.navigate('Login'); // Certifique-se de que 'LoginScreen' corresponde ao nome de sua tela de login
@@ -100,6 +133,15 @@ const RegisterScreen = ({ navigation }) => {
         onChangeText={(text) => setCpf(text)}
         keyboardType="numeric"
       />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Telefone"
+        value={telefone}
+        onChangeText={(text) => setTelefone(text)}
+        keyboardType="phone-pad"
+      />
+
       <TextInput
         style={styles.input}
         placeholder="Senha"
@@ -114,6 +156,10 @@ const RegisterScreen = ({ navigation }) => {
         onChangeText={(text) => setConfirmPassword(text)}
         secureTextEntry
       />
+
+      
+
+
       <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
         <Text style={styles.registerText}>Registrar</Text>
       </TouchableOpacity>

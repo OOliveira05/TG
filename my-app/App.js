@@ -20,6 +20,7 @@ import MapScreen from './MapScreen';
 import ReportProblemScreen from './ReportProblemScreen';
 import RegisterScreen from './RegisterScreen';
 
+global.API_URL = 'https://e34d-186-201-74-210.ngrok.io';
 
 // Criando uma pilha de navegação usando createStackNavigator
 const Stack = createStackNavigator();
