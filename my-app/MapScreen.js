@@ -32,7 +32,21 @@ const MapScreen = () => {
   const navigation = useNavigation(); 
   
   // Estado para a localização selecionada
-  const [selectedLocation, setSelectedLocation] = useState(null); 
+  const [selectedLocation, setSelectedLocation] = useState(null);
+
+  const [problems, setProblems] = useState(null);
+  
+  const getProblemsFromAPI = async () => {
+    try {
+      const response = await fetch(`${API_URL}/problema`); // Substitua pela URL real da sua API
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Erro ao buscar problemas:', error);
+      throw error;
+    }
+  };
+  
   
   // useEffect para obter a localização atual quando o componente é montado
   useEffect(() => {
@@ -53,6 +67,17 @@ const MapScreen = () => {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,});
     })();
+
+    getProblemsFromAPI()
+    .then((problems) => {
+      // Aqui, você tem a lista de problemas com suas informações e coordenadas
+      // Agora, você pode usar essas informações para criar marcadores no mapa
+      setProblems(problems); // Supondo que você tenha um estado para armazenar os problemas
+    })
+    .catch((error) => {
+      console.error('Erro ao buscar problemas:', error);
+    });
+
   }, []);
 
  
@@ -121,6 +146,16 @@ const MapScreen = () => {
             description="Endereço Pesquisado"
           />
         )}
+
+          {problems && problems.map((problem) => (
+            <Marker
+              key={problem.id}
+              coordinate={{ latitude: problem.latitude, longitude: problem.longitude }}
+              title={problem.titulo}
+              description={problem.descricao}
+            />
+          ))}
+
       </MapView>
       <View style={styles.autocomplete.container}>
         <GooglePlacesAutocomplete
