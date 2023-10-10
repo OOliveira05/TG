@@ -68,16 +68,16 @@ const MapScreen = () => {
         longitude: location.coords.longitude,});
     })();
 
-    getProblemsFromAPI()
-    .then((problems) => {
-      // Aqui, você tem a lista de problemas com suas informações e coordenadas
-      // Agora, você pode usar essas informações para criar marcadores no mapa
-      setProblems(problems); // Supondo que você tenha um estado para armazenar os problemas
-    })
-    .catch((error) => {
-      console.error('Erro ao buscar problemas:', error);
-    });
+  }, []);
 
+  useEffect(() => {
+    getProblemsFromAPI()
+      .then((problems) => {
+        setProblems(problems);
+      })
+      .catch((error) => {
+        console.error('Erro ao buscar problemas:', error);
+      });
   }, []);
 
  
