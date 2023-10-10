@@ -97,6 +97,7 @@ const RegisterScreen = ({ navigation }) => {
 
       if (response.status === 200) {
         alert('Registro bem-sucedido!');
+        navigation.navigate('Login');
       } else {
         alert('Erro ao registrar. Por favor, tente novamente.');
       }
@@ -107,7 +108,7 @@ const RegisterScreen = ({ navigation }) => {
 
 
   const handleLoginNavigation = () => {
-    navigation.navigate('Login'); // Certifique-se de que 'LoginScreen' corresponde ao nome de sua tela de login
+    navigation.navigate('Login'); 
   };
 
   return (

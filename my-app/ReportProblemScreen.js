@@ -15,10 +15,22 @@ const ReportProblemScreen = ({ route }) => {
     postalCode: '',
   });
 
-  const [cep, setCep] = useState(address.postalCode);
+  const [cep, setCep] = useState('');
   const [problemDescription, setProblemDescription] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [problemTitle, setProblemTitle] = useState('');
+
+  const categoryToOrgaoId = {
+  'Problema na estrada': 2,
+  'Iluminação Pública': 4,
+  'Cuidados com Vegetação': 1,
+  'Cano estourado': 3,
+};
+
+
+  
+  
 
   useEffect(() => {
     if (location) {
@@ -34,7 +46,7 @@ const ReportProblemScreen = ({ route }) => {
             state: result.address_components[4].short_name,
             postalCode: result.address_components[6].long_name,
           });
-          setCep(result.address_components[6].long_name); // Atualiza o estado do CEP
+          setCep(result.address_components[6].long_name);
         })
         .catch(error => console.error('Erro ao obter dados de geocodificação:', error));
     }
@@ -78,12 +90,10 @@ const ReportProblemScreen = ({ route }) => {
       quality: 1,
     });
   
-    if (!result.canceled) {
-      setSelectedImage([...selectedImage, result.uri]); // Use setSelectedImage to update the state
+    if (!result.cancelled) {
+      setSelectedImage([...selectedImage, result.uri]);
     }
   }
-  
-  
 
   const openCamera = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -98,8 +108,8 @@ const ReportProblemScreen = ({ route }) => {
       quality: 1,
     });
   
-    if (!result.canceled) {
-      setSelectedImage([...selectedImage, result.uri]); // Use setSelectedImage to update the state
+    if (!result.cancelled) {
+      setSelectedImage([...selectedImage, result.uri]);
     }
   }
 
@@ -108,148 +118,214 @@ const ReportProblemScreen = ({ route }) => {
     newImages.splice(index, 1);
     setSelectedImage(newImages);
   }
+
+  const createProblem = (locationId) => {
+    const orgaoResponsavelId = categoryToOrgaoId[selectedCategory];
+    const problemData = {
+      titulo: problemTitle,
+      descricao: problemDescription,
+      contador_apoio: 0,
+      id_pessoa: 4, 
+      id_orgao_responsavel: orgaoResponsavelId, 
+      id_localizacao: locationId,
+    };
   
+    fetch(`${API_URL}/problema`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(problemData),
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Problema criado com sucesso:', data);
+    })
+    .catch(error => {
+      console.error('Erro ao criar problema:', error);
+    });
+  }
+  
+
+  const insertLocation = () => {
+    const numericCep = cep.replace(/\D/g, '');
+    const locationData = {
+      latitude: location.latitude,
+      longitude: location.longitude,
+      cep: numericCep,
+      rua: address.street,
+      numero: address.number,
+      bairro: address.neighborhood,
+      cidade: address.city,
+      estado: address.state,
+    };
+  
+    fetch(`${API_URL}/localizacao`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(locationData),
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Localização inserida com sucesso:', data);
+      createProblem(data.insertId); 
+    })
+    .catch(error => {
+      console.error('Erro ao inserir dados de localização:', error);
+    });
+  }
+
   
 
   return (
     <ScrollView>
-
-    <View style={styles.locationInfo}>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>CEP:</Text>
-        <TextInput
-          style={styles.input}
-          value={cep}
-          onChangeText={text => setCep(text)} // Atualiza o estado do CEP
-          placeholder="Digite o CEP"
-        />
-        <TouchableOpacity onPress={searchByCep} style={styles.searchButton}>
-          <Text style={styles.searchButtonText}>Buscar</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Rua:</Text>
-        <TextInput
-          style={styles.input}
-          value={address.street}
-          editable={false}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Número:</Text>
-        <TextInput
-          style={styles.input}
-          value={address.number}
-          onChangeText={text => setAddress({ ...address, number: text })}
-          placeholder="Digite o número"
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Bairro:</Text>
-        <TextInput
-          style={styles.input}
-          value={address.neighborhood}
-          editable={false}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Cidade:</Text>
-        <TextInput
-          style={styles.input}
-          value={address.city}
-          editable={false}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Estado:</Text>
-        <TextInput
-          style={styles.input}
-          value={address.state}
-          editable={false}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Descrição do Problema:</Text>
-        <TextInput
-          style={styles.inputDescricao}
-          value={problemDescription}
-          onChangeText={text => setProblemDescription(text)}
-          placeholder="Descreva o problema"
-          multiline={true}
-          numberOfLines={4}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Categoria do Problema:</Text>
-        <TouchableOpacity onPress={openCategoryModal} style={styles.categoryButton}>
-          <Text>{selectedCategory || 'Selecione a categoria'}</Text>
-        </TouchableOpacity>
-      </View>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Pressable onPress={() => selectCategory('Problema na estrada')} style={styles.modalOption}>
-              <Text>Problema na estrada</Text>
-            </Pressable>
-            <Pressable onPress={() => selectCategory('Iluminação Pública')} style={styles.modalOption}>
-              <Text>Iluminação Pública</Text>
-            </Pressable>
-            <Pressable onPress={() => selectCategory('Cuidados com Vegetação')} style={styles.modalOption}>
-              <Text>Cuidados com Vegetação</Text>
-            </Pressable>
-            <Pressable onPress={() => selectCategory('Cano estourado')} style={styles.modalOption}>
-              <Text>Cano estourado</Text>
-            </Pressable>
-            <Pressable onPress={() => setModalVisible(false)} style={styles.modalOptionCancel}>
-              <Text style = {{color: 'red'}}>Cancelar</Text>
-            </Pressable>
-          </View>
+      <View style={styles.locationInfo}>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>CEP:</Text>
+          <TextInput
+            style={styles.input}
+            value={cep}
+            onChangeText={text => setCep(text)}
+            placeholder="Digite o CEP"
+          />
+          <TouchableOpacity onPress={searchByCep} style={styles.searchButton}>
+            <Text style={styles.searchButtonText}>Buscar</Text>
+          </TouchableOpacity>
         </View>
-      </Modal>
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Anexar Foto:</Text>
-        <TouchableOpacity onPress={openImagePicker} style={styles.categoryButton}>
-          <Text>{selectedImage ? 'Ver Foto' : 'Anexar'}</Text>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Rua:</Text>
+          <TextInput
+            style={styles.input}
+            value={address.street}
+            editable={false}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Número:</Text>
+          <TextInput
+            style={styles.input}
+            value={address.number}
+            onChangeText={text => setAddress({ ...address, number: text })}
+            placeholder="Digite o número"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Bairro:</Text>
+          <TextInput
+            style={styles.input}
+            value={address.neighborhood}
+            editable={false}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Cidade:</Text>
+          <TextInput
+            style={styles.input}
+            value={address.city}
+            editable={false}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Estado:</Text>
+          <TextInput
+            style={styles.input}
+            value={address.state}
+            editable={false}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Título do Problema:</Text>
+          <TextInput
+            style={styles.input}
+            value={problemTitle}
+            onChangeText={text => setProblemTitle(text)}
+            placeholder="Digite o título do problema"
+          />
+        </View>
+
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Descrição do Problema:</Text>
+          <TextInput
+            style={styles.inputDescricao}
+            value={problemDescription}
+            onChangeText={text => setProblemDescription(text)}
+            placeholder="Descreva o problema"
+            multiline={true}
+            numberOfLines={4}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Categoria do Problema:</Text>
+          <TouchableOpacity onPress={openCategoryModal} style={styles.categoryButton}>
+            <Text>{selectedCategory || 'Selecione a categoria'}</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Pressable onPress={() => selectCategory('Problema na estrada')} style={styles.modalOption}>
+                <Text>Problema na estrada</Text>
+              </Pressable>
+              <Pressable onPress={() => selectCategory('Iluminação Pública')} style={styles.modalOption}>
+                <Text>Iluminação Pública</Text>
+              </Pressable>
+              <Pressable onPress={() => selectCategory('Cuidados com Vegetação')} style={styles.modalOption}>
+                <Text>Cuidados com Vegetação</Text>
+              </Pressable>
+              <Pressable onPress={() => selectCategory('Cano estourado')} style={styles.modalOption}>
+                <Text>Cano estourado</Text>
+              </Pressable>
+              <Pressable onPress={() => setModalVisible(false)} style={styles.modalOptionCancel}>
+                <Text style = {{color: 'red'}}>Cancelar</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Anexar Foto:</Text>
+          <TouchableOpacity onPress={openImagePicker} style={styles.categoryButton}>
+            <Text>{selectedImage.length > 0 ? 'Ver Fotos' : 'Anexar'}</Text>
+          </TouchableOpacity>
+        </View>
+
+        {selectedImage.map((imageUri, index) => ( 
+          <View key={index} style={styles.imageWrapper}> 
+            <Image source={{ uri: imageUri }} style={styles.selectedImage} /> 
+            <TouchableOpacity onPress={() => removeImage(index)} style={styles.removeButton}>
+              <Text style={styles.removeButtonText}>Remover</Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+
+        <TouchableOpacity onPress={insertLocation} style={styles.searchButton}>
+          <Text style={styles.submitButtonText}>Enviar Problema</Text>
         </TouchableOpacity>
+
       </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Tirar Foto:</Text>
-        <TouchableOpacity onPress={openCamera} style={styles.categoryButton}>
-          <Text>{selectedImage ? 'Ver Foto' : 'Tirar Foto'}</Text>
-        </TouchableOpacity>
-      </View>
-
-      {selectedImage.map((imageUri, index) => ( 
-  <View key={index} style={styles.imageWrapper}> 
-    <Image source={{ uri: imageUri }} style={styles.selectedImage} /> 
-    <TouchableOpacity onPress={() => removeImage(index)} style={styles.removeButton}>
-      <Text style={styles.removeButtonText}>Remover</Text>
-    </TouchableOpacity>
-  </View>
-))}
-
-
-    </View>
     </ScrollView>
   );
 }
+
+
 
 
   const styles = StyleSheet.create({
