@@ -114,6 +114,14 @@ const MapScreen = () => {
     navigation.navigate('ReportProblem', { selectedLocation });
   };
 
+  const [selectedProblem, setSelectedProblem] = useState(null);
+
+  const handleViewDetails = () => {
+    navigation.navigate('ProblemDetails', { problem: selectedProblem });
+  };
+  
+
+
   // Renderização do componente
   return (
     <View style={styles.container}>
@@ -153,8 +161,11 @@ const MapScreen = () => {
               coordinate={{ latitude: problem.latitude, longitude: problem.longitude }}
               title={problem.titulo}
               description={problem.descricao}
+              onPress={() => setSelectedProblem(problem)}
             />
           ))}
+
+          
 
       </MapView>
       <View style={styles.autocomplete.container}>
@@ -223,6 +234,13 @@ const MapScreen = () => {
       <Ionicons name="locate" size={60} color="white" />
     </TouchableOpacity>
 
+    {selectedProblem && (
+    <TouchableOpacity onPress={handleViewDetails}  style={styles.viewDetailsButton}>
+    <Text style={styles.viewDetailsButtonText} >Ver Detalhes do Problema</Text>
+    </TouchableOpacity>
+    )}
+
+
     </View>
   );
 }
@@ -286,6 +304,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     zIndex:2,
+  },
+
+  viewDetailsButton: {
+    position: 'absolute',
+    bottom: 70, 
+    left: 20,
+    right: 20,
+    height: 40,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFA500',
+  },
+  viewDetailsButtonText: {
+    color: 'white',
+    fontSize: 18,
   },
 });
 
