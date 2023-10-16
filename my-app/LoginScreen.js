@@ -1,25 +1,45 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Importação do hook de navegação
+import { useNavigation } from '@react-navigation/native'; 
 
 const LoginScreen = () => {
-  const navigation = useNavigation(); // Inicializa o hook de navegação
+  const navigation = useNavigation(); 
 
-  // Definindo estados para os campos de usuário e senha
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    // Implemente a lógica de autenticação aqui
-    if (username === 'admin' && password === '1234') {
+    fetch(`${API_URL}/pessoa/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: username,
+        senha: password,
+        telefone: null,
+      }),
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Erro ao efetuar o login');
+      }
+    })
+    .then(data => {
+      alert(data.message); // Exibe a mensagem de sucesso
+      // Aqui você pode decidir o que fazer após o login bem-sucedido
       navigation.navigate('Map');
-    } else {
+    })
+    .catch(error => {
+      console.error('Erro:', error);
       alert('Combinação de usuário e senha inválida');
-    }
+    });
   };
 
   const handleRegister = () => {
-    navigation.navigate('Register'); // Navega para a tela de registro
+    navigation.navigate('Register'); 
   };
 
   return (
