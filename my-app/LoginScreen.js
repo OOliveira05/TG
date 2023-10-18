@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = () => {
   const navigation = useNavigation(); 
@@ -27,9 +28,9 @@ const LoginScreen = () => {
         throw new Error('Erro ao efetuar o login');
       }
     })
-    .then(data => {
-      alert(data.message); // Exibe a mensagem de sucesso
-      // Aqui você pode decidir o que fazer após o login bem-sucedido
+    .then(async data => {
+      alert(data.message); 
+      await AsyncStorage.setItem('loggedInUserId', data.pessoa.id.toString());
       navigation.navigate('Map');
     })
     .catch(error => {

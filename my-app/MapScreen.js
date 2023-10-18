@@ -6,6 +6,7 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import { useNavigation } from '@react-navigation/native'; // Hook de navegação
 import * as Location from 'expo-location'; // Importando a biblioteca de localização do Expo
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
 // Definindo o componente funcional MapScreen
@@ -119,12 +120,28 @@ const MapScreen = () => {
   const handleViewDetails = () => {
     navigation.navigate('ProblemDetails', { problem: selectedProblem });
   };
+
+  const getUserId = async () => {
+    try {
+      const id = await AsyncStorage.getItem('loggedInUserId');
+      if (id !== null) {
+        // O ID do usuário foi encontrado no AsyncStorage
+        return id;
+      } else {
+        // Nenhum ID encontrado
+        return null;
+      }
+    } catch (error) {
+      console.error('Erro ao obter o ID do usuário:', error);
+      return null;
+    }
+  };
   
 
   const handleSupport = async () => {
     try {
       // Adicione o código para obter o id_pessoa aqui
-      const id_pessoa = 4; // Substitua pelo código real para obter o id da pessoa
+      const id_pessoa = await getUserId(); // Substitua pelo código real para obter o id da pessoa
 
       const response = await fetch(`${API_URL}/problema/contador/${selectedProblem.id}`, {
         method: 'PUT',

@@ -3,6 +3,8 @@ import { View, TextInput, Text, StyleSheet, TouchableOpacity, Modal, Pressable, 
 import * as ImagePicker from 'expo-image-picker';
 import { Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 
 const ReportProblemScreen = ({ route }) => {
@@ -24,6 +26,7 @@ const ReportProblemScreen = ({ route }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [problemTitle, setProblemTitle] = useState('');
+  const [loggedInUserId, setLoggedInUserId] = useState(null);
 
   const categoryToOrgaoId = {
   'Problema na estrada': 2,
@@ -121,7 +124,32 @@ const ReportProblemScreen = ({ route }) => {
     const newImages = [...selectedImage];
     newImages.splice(index, 1);
     setSelectedImage(newImages);
+
+    
   }
+
+  const getUserId = async () => {
+    try {
+      const id = await AsyncStorage.getItem('loggedInUserId');
+      if (id !== null) {
+        // O ID do usuário foi encontrado no AsyncStorage
+        return id;
+      } else {
+        // Nenhum ID encontrado
+        return null;
+      }
+    } catch (error) {
+      console.error('Erro ao obter o ID do usuário:', error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      const id = await getUserId();
+      setLoggedInUserId(id);
+    })();
+  }, []);
 
   const createProblem = (locationId) => {
     const orgaoResponsavelId = categoryToOrgaoId[selectedCategory];
@@ -129,7 +157,7 @@ const ReportProblemScreen = ({ route }) => {
       titulo: problemTitle,
       descricao: problemDescription,
       contador_apoio: 0,
-      id_pessoa: 4, 
+      id_pessoa: loggedInUserId, 
       id_orgao_responsavel: orgaoResponsavelId, 
       id_localizacao: locationId,
     };
