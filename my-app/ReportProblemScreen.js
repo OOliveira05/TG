@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity, Modal, Pressable, Image, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native'; 
+
 
 const ReportProblemScreen = ({ route }) => {
+  const navigation = useNavigation();
   const [selectedImage, setSelectedImage] = useState([]);
   const { selectedLocation } = route.params;
   const [location, setLocation] = useState(selectedLocation);
@@ -140,6 +144,19 @@ const ReportProblemScreen = ({ route }) => {
     .then(response => response.json())
     .then(data => {
       console.log('Problema criado com sucesso:', data);
+      Alert.alert(
+        'Problema Cadastrado com Sucesso!',
+        'Problema enviado para o órgão responsável\nObrigado por reportar',
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              navigation.navigate('Map');
+            }
+          }
+        ]
+      );
+
     })
     .catch(error => {
       console.error('Erro ao criar problema:', error);

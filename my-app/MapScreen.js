@@ -38,7 +38,7 @@ const MapScreen = () => {
   
   const getProblemsFromAPI = async () => {
     try {
-      const response = await fetch(`${API_URL}/problema`); // Substitua pela URL real da sua API
+      const response = await fetch(`${API_URL}/problema`); 
       const data = await response.json();
       return data;
     } catch (error) {

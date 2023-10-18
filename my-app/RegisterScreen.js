@@ -3,10 +3,6 @@ import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-nativ
 import axios from 'axios';
 
 
-
-
-
-
 const RegisterScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
