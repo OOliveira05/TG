@@ -1,6 +1,6 @@
 // Importando os módulos necessários do React Native e outras bibliotecas
 import React, { useState, useEffect  } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet,Alert } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { useNavigation } from '@react-navigation/native'; // Hook de navegação
@@ -121,6 +121,35 @@ const MapScreen = () => {
   };
   
 
+  const handleSupport = async () => {
+    try {
+      // Adicione o código para obter o id_pessoa aqui
+      const id_pessoa = 4; // Substitua pelo código real para obter o id da pessoa
+
+      const response = await fetch(`${API_URL}/problema/contador/${selectedProblem.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          // Adicione os headers necessários (como tokens de autenticação) aqui, se aplicável
+        },
+        body: JSON.stringify({ id_pessoa }),
+      });
+  
+      if (response.ok) {
+        setSelectedProblem(prevProblem => ({ ...prevProblem, contador_apoio: prevProblem.contador_apoio + 1 }));
+        Alert.alert('Sucesso', 'Você apoiou o problema com sucesso');
+      } else {
+        console.error('Erro ao apoiar o problema');
+        Alert.alert('Erro', 'Você já apoiou esse problema');
+      }
+    } catch (error) {
+      console.error('Erro ao apoiar o problema:', error);
+    }
+  };
+  
+  
+
+
 
   // Renderização do componente
   return (
@@ -238,7 +267,15 @@ const MapScreen = () => {
     <TouchableOpacity onPress={handleViewDetails}  style={styles.viewDetailsButton}>
     <Text style={styles.viewDetailsButtonText} >Ver Detalhes do Problema</Text>
     </TouchableOpacity>
+    
     )}
+
+        {selectedProblem && (
+        <TouchableOpacity onPress={handleSupport} style={styles.supportButton}>
+          <Text style={styles.supportButtonText}>Apoiar</Text>
+        </TouchableOpacity>
+    )}
+
 
 
     </View>
@@ -321,6 +358,25 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
   },
+
+  supportButton: {
+    position: 'absolute',
+    bottom: 150, 
+    left: 20,
+    right: 20,
+    height: 40,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFA500', // Cor de fundo laranja
+  },
+  
+  supportButtonText: {
+    color: 'white', // Cor do texto branca
+    fontSize: 18,
+    fontWeight: 'bold', // Peso da fonte em negrito
+  }
+  
 });
 
 // Exportando o componente MapScreen
