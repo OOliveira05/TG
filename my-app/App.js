@@ -21,7 +21,7 @@ import ReportProblemScreen from './ReportProblemScreen';
 import RegisterScreen from './RegisterScreen';
 import ProblemDetailsScreen from './ProblemDetailsScreen';
 
-global.API_URL = 'https://3478-186-201-74-210.ngrok.io';
+global.API_URL = 'https://ab1a-2804-868-d048-895a-293e-ab9e-bbcd-1e0c.ngrok.io';
 
 // Criando uma pilha de navegação usando createStackNavigator
 const Stack = createStackNavigator();

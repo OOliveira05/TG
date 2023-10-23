@@ -118,6 +118,7 @@ const MapScreen = () => {
   const [selectedProblem, setSelectedProblem] = useState(null);
 
   const handleViewDetails = () => {
+    console.log('Problema selecionado:', selectedProblem);
     navigation.navigate('ProblemDetails', { problem: selectedProblem });
   };
 
@@ -125,10 +126,9 @@ const MapScreen = () => {
     try {
       const id = await AsyncStorage.getItem('loggedInUserId');
       if (id !== null) {
-        // O ID do usuário foi encontrado no AsyncStorage
+        console.log(id);
         return id;
       } else {
-        // Nenhum ID encontrado
         return null;
       }
     } catch (error) {
@@ -140,16 +140,14 @@ const MapScreen = () => {
 
   const handleSupport = async () => {
     try {
-      // Adicione o código para obter o id_pessoa aqui
-      const id_pessoa = await getUserId(); // Substitua pelo código real para obter o id da pessoa
+      const id_pessoaPontua = await getUserId();
 
-      const response = await fetch(`${API_URL}/problema/contador/${selectedProblem.id}`, {
+      const response = await fetch(`${API_URL}/problema/pontua/${selectedProblem.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          // Adicione os headers necessários (como tokens de autenticação) aqui, se aplicável
         },
-        body: JSON.stringify({ id_pessoa }),
+        body: JSON.stringify({ id_pessoaPontua }),
       });
   
       if (response.ok) {

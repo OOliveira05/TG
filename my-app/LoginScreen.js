@@ -29,6 +29,7 @@ const LoginScreen = () => {
       }
     })
     .then(async data => {
+      console.log('ID armazenado:', data.pessoa.id);
       alert(data.message); 
       await AsyncStorage.setItem('loggedInUserId', data.pessoa.id.toString());
       navigation.navigate('Map');

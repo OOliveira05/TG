@@ -36,9 +36,6 @@ const ReportProblemScreen = ({ route }) => {
 };
 
 
-  
-  
-
   useEffect(() => {
     if (location) {
       fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.latitude},${location.longitude}&key=AIzaSyCVa4H3UiBHTefbW5FVFkVEUi6tMydyets`)
