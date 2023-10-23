@@ -223,6 +223,9 @@ const ReportProblemScreen = ({ route }) => {
 
   return (
     <ScrollView>
+      <TouchableOpacity onPress={() => navigation.navigate('Map')} style={styles.backButton}>
+        <Text style={styles.backButtonText}>Voltar</Text>
+      </TouchableOpacity>
       <View style={styles.locationInfo}>
         <View style={styles.inputContainer}>
           <Text style={styles.label}>CEP:</Text>
@@ -359,7 +362,7 @@ const ReportProblemScreen = ({ route }) => {
         ))}
 
         <TouchableOpacity onPress={insertLocation} style={styles.searchButton}>
-          <Text style={styles.submitButtonText}>Enviar Problema</Text>
+          <Text style={styles.searchButtonText}>Enviar Problema</Text>
         </TouchableOpacity>
 
       </View>
@@ -421,7 +424,7 @@ const ReportProblemScreen = ({ route }) => {
       justifyContent: 'center',
     },
     centeredView: {
-      flex: 1,
+      flexGrow: 1,
       justifyContent: 'center',
       alignItems: 'center',
       marginTop: 22,
@@ -486,6 +489,17 @@ const ReportProblemScreen = ({ route }) => {
     removeButtonText: {
       color: 'red',
       fontSize: 12,
+    },
+
+    backButton: {
+      marginTop: 16,
+      backgroundColor: '#8A2BE2',
+      padding: 10,
+      borderRadius: 8,
+      alignSelf: 'flex-start',
+    },
+    backButtonText: {
+      color: '#fff',
     },
 });
 
