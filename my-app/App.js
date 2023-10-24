@@ -20,8 +20,10 @@ import MapScreen from './MapScreen';
 import ReportProblemScreen from './ReportProblemScreen';
 import RegisterScreen from './RegisterScreen';
 import ProblemDetailsScreen from './ProblemDetailsScreen';
+import ProblemList from './ProblemList';
+import ProblemDetailsList from './ProblemDetailsList';
 
-global.API_URL = 'https://ab1a-2804-868-d048-895a-293e-ab9e-bbcd-1e0c.ngrok.io';
+global.API_URL = 'https://6db1-186-201-74-210.ngrok.io';
 
 // Criando uma pilha de navegação usando createStackNavigator
 const Stack = createStackNavigator();
@@ -41,6 +43,8 @@ const App = () => {
           <Stack.Screen name="ReportProblem" component={ReportProblemScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
           <Stack.Screen name="ProblemDetails" component={ProblemDetailsScreen} />
+          <Stack.Screen name="ProblemList" component={ProblemList} />
+          <Stack.Screen name="ProblemDetailsList" component={ProblemDetailsList} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

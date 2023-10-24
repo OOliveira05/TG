@@ -299,7 +299,7 @@ const MapScreen = () => {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <ScrollView>
-                <Pressable onPress={() => navigation.navigate('ProblemsList')} style={styles.modalOption}>
+                <Pressable onPress={() => navigation.navigate('ProblemList')} style={styles.modalOption}>
                   <Text style={[styles.modalOptionText]}>Ver meus problemas</Text>
                 </Pressable>
                 <Pressable onPress={handleLogout} style={styles.modalOption}>
