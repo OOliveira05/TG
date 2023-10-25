@@ -4,6 +4,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CommonActions } from '@react-navigation/native';
 
 
 
@@ -129,10 +130,8 @@ const ReportProblemScreen = ({ route }) => {
     try {
       const id = await AsyncStorage.getItem('loggedInUserId');
       if (id !== null) {
-        // O ID do usuário foi encontrado no AsyncStorage
         return id;
       } else {
-        // Nenhum ID encontrado
         return null;
       }
     } catch (error) {
@@ -177,12 +176,20 @@ const ReportProblemScreen = ({ route }) => {
             text: 'OK',
             onPress: () => {
               navigation.navigate('Map');
+              navigation.dispatch(
+                CommonActions.reset({
+                  index: 0,
+                  routes: [
+                    { name: 'Map', params: { reload: true } }
+                  ],
+                })
+              );
             }
           }
         ]
       );
-
     })
+
     .catch(error => {
       console.error('Erro ao criar problema:', error);
     });
