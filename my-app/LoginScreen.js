@@ -1,9 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const LoginScreen = () => {
+
+const LoginScreen = ({ route }) => {
+  
+  const [reloadMap, setReloadMap] = useState(false);
+
+
+  useEffect(() => {
+    if (route.params && route.params.reloadLogin) {
+      setReloadMap(prev => !prev);
+    }
+  }, [route.params]);
+
+
   const navigation = useNavigation(); 
 
   const [username, setUsername] = useState('');

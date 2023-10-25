@@ -15,8 +15,13 @@ import { useNavigation } from '@react-navigation/native';
 import * as Location from 'expo-location';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ModalComponent from './ModalComponent'; 
+import { CommonActions } from '@react-navigation/native';
 
-const MapScreen = () => {
+
+
+const MapScreen = ({ route }) => {
+  const [reloadMap, setReloadMap] = useState(false);
   const [userInteraction, setUserInteraction] = useState(false);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [region, setRegion] = useState({
@@ -31,6 +36,7 @@ const MapScreen = () => {
   const [problems, setProblems] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedProblem, setSelectedProblem] = useState(null);
+ 
 
   const openModal = () => {
     setModalVisible(true);
@@ -126,7 +132,10 @@ const MapScreen = () => {
   const handleLogout = async () => {
     try {
       await AsyncStorage.clear();
-      navigation.navigate('Login');
+      navigation.dispatch(CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'Login', params: { reloadLogin: true } }],
+      }));
     } catch (error) {
       console.error('Erro ao fazer logoff:', error);
     }
@@ -164,9 +173,16 @@ const MapScreen = () => {
       });
   }, []);
 
+  useEffect(() => {
+    if (route.params && route.params.reloadMap) {
+      setReloadMap(prev => !prev);
+    }
+  }, [route.params]);
+
   return (
     <View style={styles.container}>
       <MapView
+        key={reloadMap ? new Date().getTime() : 'map'}
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         region={{
@@ -289,29 +305,13 @@ const MapScreen = () => {
         <Ionicons name="menu" size={50} color="white" />
       </TouchableOpacity>
 
-      {/* Modal */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={closeModal}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <ScrollView>
-                <Pressable onPress={() => navigation.navigate('ProblemList')} style={styles.modalOption}>
-                  <Text style={[styles.modalOptionText]}>Ver meus problemas</Text>
-                </Pressable>
-                <Pressable onPress={handleLogout} style={styles.modalOption}>
-                  <Text style={[styles.modalOptionText, {color: 'blue'}]}>Fazer Logoff</Text>
-                </Pressable>
-                <Pressable onPress={closeModal} style={styles.modalOption}>
-                  <Text style={[styles.modalOptionText, {color: 'red'}]}>Fechar Menu</Text>
-                </Pressable>
-              </ScrollView>
-            </View>
-          </View>
-        </Modal>
+    
+      <ModalComponent
+        modalVisible={modalVisible}
+        closeModal={closeModal}
+        navigation={navigation}
+        handleLogout={handleLogout}
+      />
 
     </View>
   );
@@ -395,7 +395,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 80,
     left: 20,
-    zIndex: 2,
+    zIndex: 1,
     backgroundColor: '#8A2BE2',
     borderRadius: 10
   },

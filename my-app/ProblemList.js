@@ -2,11 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { TouchableOpacity, Text, View, StyleSheet, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Importe o AsyncStorage
+import { CommonActions } from '@react-navigation/native';
 
 const ProblemList = () => {
   const navigation = useNavigation();
   const [isShowingCadastrados, setIsShowingCadastrados] = useState(true);
   const [problemas, setProblemas] = useState([]);
+
+  const goToMapScreen = () => {
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [
+          { name: 'Map', params: { reload: true } }
+        ],
+      })
+    );
+  };
   
   // Obtenha o ID do usuário usando AsyncStorage
   const getUserId = async () => {
@@ -52,11 +64,13 @@ const ProblemList = () => {
     navigation.navigate('ProblemDetailsList', { problema });
   };
 
+  
+
   return (
     <View>
       {/* ... Seu código da tela ProblemDetailsScreen */}
       
-      <TouchableOpacity onPress={() => navigation.navigate('Map')} style={styles.backButton}>
+      <TouchableOpacity onPress={goToMapScreen} style={styles.backButton}>
         <Text style={styles.backButtonText}>Voltar</Text>
       </TouchableOpacity>
 
