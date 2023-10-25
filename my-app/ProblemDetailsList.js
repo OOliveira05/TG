@@ -1,11 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProblemDetailsList = () => {
   const route = useRoute();
   const { problema } = route.params;
   const navigation = useNavigation();
+  const [loggedInUserId, setLoggedInUserId] = useState(null);
+
+  const getUserId = async () => {
+    try {
+      const id = await AsyncStorage.getItem('loggedInUserId');
+      if (id !== null) {
+        return id;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error('Erro ao obter o ID do usuário:', error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      const id = await getUserId();
+      setLoggedInUserId(id);
+    })();
+  }, []);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -44,6 +67,7 @@ const ProblemDetailsList = () => {
             <Text style={styles.text}>{problema.latitude}</Text>
             <Text style={styles.label}>Longitude:</Text>
             <Text style={styles.text}>{problema.longitude}</Text>
+          
           </View>
         ) : (
           <Text>Carregando...</Text>

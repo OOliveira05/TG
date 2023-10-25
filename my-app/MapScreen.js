@@ -225,7 +225,7 @@ const MapScreen = ({ route }) => {
 
       <View style={styles.autocomplete.container}>
         <GooglePlacesAutocomplete
-          placeholder="Digite o endereço"
+          placeholder="Pesquise o endereço para reportar o problema"
           minLength={2}
           autoFocus={false}
           returnKeyType={'search'}

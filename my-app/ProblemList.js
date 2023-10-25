@@ -68,7 +68,7 @@ const ProblemList = () => {
 
   return (
     <View>
-      {/* ... Seu código da tela ProblemDetailsScreen */}
+      
       
       <TouchableOpacity onPress={goToMapScreen} style={styles.backButton}>
         <Text style={styles.backButtonText}>Voltar</Text>
@@ -85,6 +85,7 @@ const ProblemList = () => {
           <TouchableOpacity key={problema.id} onPress={() => goToProblemDetails(problema)}>
             <View style={styles.problemContainer}>
               <Text style={styles.problemTitle}>{problema.titulo}</Text>
+              <Text>Data de Criação: {problema.data_criacao}</Text>
              
             </View>
           </TouchableOpacity>
@@ -103,6 +104,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
     alignSelf: 'flex-start',
+    marginLeft: 15,
   },
   backButtonText: {
     color: '#fff',
@@ -113,6 +115,8 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
     alignSelf: 'flex-start',
+    marginLeft: 15,
+    marginBottom: 30,
   },
   toggleButtonText: {
     color: '#fff',
