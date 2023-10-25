@@ -28,6 +28,7 @@ const ReportProblemScreen = ({ route }) => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [problemTitle, setProblemTitle] = useState('');
   const [loggedInUserId, setLoggedInUserId] = useState(null);
+  
 
   const categoryToOrgaoId = {
   'Problema na estrada': 2,
@@ -57,20 +58,6 @@ const ReportProblemScreen = ({ route }) => {
     }
   }, [location]);
 
-  const searchByCep = () => {
-    fetch(`https://viacep.com.br/ws/${cep}/json/`)
-      .then(response => response.json())
-      .then(data => {
-        setAddress({
-          street: data.logradouro,
-          neighborhood: data.bairro,
-          city: data.localidade,
-          state: data.uf,
-          postalCode: data.cep,
-        });
-      })
-      .catch(error => console.error('Erro ao obter dados de endereço:', error));
-  }
 
   const openCategoryModal = () => {
     setModalVisible(true);
@@ -199,7 +186,7 @@ const ReportProblemScreen = ({ route }) => {
   const insertLocation = () => {
     const numericCep = cep.replace(/\D/g, '');
     const locationData = {
-      latitude: location.latitude,
+      latitude:  location.latitude,
       longitude: location.longitude,
       cep: numericCep,
       rua: address.street,
@@ -239,12 +226,9 @@ const ReportProblemScreen = ({ route }) => {
           <TextInput
             style={styles.input}
             value={cep}
-            onChangeText={text => setCep(text)}
-            placeholder="Digite o CEP"
+            editable={false}
           />
-          <TouchableOpacity onPress={searchByCep} style={styles.searchButton}>
-            <Text style={styles.searchButtonText}>Buscar</Text>
-          </TouchableOpacity>
+          
         </View>
 
         <View style={styles.inputContainer}>
@@ -261,8 +245,7 @@ const ReportProblemScreen = ({ route }) => {
           <TextInput
             style={styles.input}
             value={address.number}
-            onChangeText={text => setAddress({ ...address, number: text })}
-            placeholder="Digite o número"
+            editable={false}
           />
         </View>
 
@@ -398,7 +381,7 @@ const ReportProblemScreen = ({ route }) => {
       borderWidth: 1,
       paddingLeft: 8,
       borderRadius: 10,
-      width: '100%',
+      width: '95%',
     },
     inputDescricao: {
       height: 60,
@@ -406,7 +389,7 @@ const ReportProblemScreen = ({ route }) => {
       borderWidth: 1,
       paddingLeft: 8,
       borderRadius: 10,
-      width: '100%',
+      width: '95%',
     },
     searchButton: {
       padding: 10,
@@ -416,6 +399,7 @@ const ReportProblemScreen = ({ route }) => {
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: '#8A2BE2',
+      width: '95%',
     },
     searchButtonText: {
       color: '#fff',
@@ -427,7 +411,7 @@ const ReportProblemScreen = ({ route }) => {
       borderWidth: 1,
       paddingLeft: 8,
       borderRadius: 10,
-      width: '100%',
+      width: '95%',
       justifyContent: 'center',
     },
     centeredView: {
@@ -504,6 +488,7 @@ const ReportProblemScreen = ({ route }) => {
       padding: 10,
       borderRadius: 8,
       alignSelf: 'flex-start',
+      marginLeft:15,
     },
     backButtonText: {
       color: '#fff',
