@@ -36,6 +36,11 @@ const MapScreen = ({ route }) => {
   const [problems, setProblems] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedProblem, setSelectedProblem] = useState(null);
+  const [showButtons, setShowButtons] = useState(false);
+
+  const handleMapPress = () => {
+    setShowButtons(false);
+  };
  
 
   const openModal = () => {
@@ -196,6 +201,11 @@ const MapScreen = ({ route }) => {
             setZoomLevel(1);
           }
         }}
+        onPress={() => {
+          setSelectedProblem(null); // Ao tocar no mapa, deseleciona o problema
+          setShowButtons(false);
+        }}
+
       >
         {currentLocation && (
           <Marker
