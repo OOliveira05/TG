@@ -57,20 +57,25 @@ const MapScreen = ({ route }) => {
       console.error('Permissão de localização não concedida');
       return;
     }
-
+  
     let location = await Location.getCurrentPositionAsync({});
-    setRegion({
-      ...region,
+    
+    const newRegion = {
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
-    });
+      latitudeDelta: region.latitudeDelta,
+      longitudeDelta: region.longitudeDelta,
+    };
+  
+    setRegion(newRegion);
+  
     setZoomLevel(1);
-
+  
     setCurrentLocation({
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
     });
-
+  
     setSelectedLocation({
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
@@ -107,6 +112,7 @@ const MapScreen = ({ route }) => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache',
         },
         body: JSON.stringify({ id_pessoaPontua }),
       });
@@ -125,7 +131,11 @@ const MapScreen = ({ route }) => {
 
   const getProblemsFromAPI = async () => {
     try {
-      const response = await fetch(`${API_URL}/problema`);
+      const response = await fetch(`${API_URL}/problema`, {
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      });
       const data = await response.json();
       return data;
     } catch (error) {

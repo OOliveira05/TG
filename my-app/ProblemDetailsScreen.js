@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity,Image } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 
 const ProblemDetailsScreen = () => {
@@ -44,6 +44,16 @@ const ProblemDetailsScreen = () => {
             <Text style={styles.text}>{problem.latitude}</Text>
             <Text style={styles.label}>Longitude:</Text>
             <Text style={styles.text}>{problem.longitude}</Text>
+            <Text style={styles.label}>Url foto:</Text>
+            <Text style={styles.text}>{problem.url_foto}</Text>
+            <View style={styles.imageContainer}>
+        <Text style={styles.label}>Foto:</Text>
+        <Image 
+          source={{ uri: problem.url_foto }} 
+          style={styles.image} 
+          resizeMode="contain" 
+        />
+      </View>
           </View>
         ) : (
           <Text>Carregando...</Text>
@@ -88,6 +98,17 @@ const styles = StyleSheet.create({
   },
   backButtonText: {
     color: '#fff',
+  },
+
+  imageContainer: {
+    marginTop: 16,
+    alignItems: 'center',
+  },
+  image: {
+    aspectRatio: 1, // Mantém a proporção da imagem
+    width: '100%',
+    borderRadius: 8,
+    marginTop: 8, 
   },
 });
 

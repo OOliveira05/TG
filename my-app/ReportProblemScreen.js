@@ -5,6 +5,8 @@ import { Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CommonActions } from '@react-navigation/native';
+import axios from 'axios';
+
 
 
 
@@ -28,6 +30,8 @@ const ReportProblemScreen = ({ route }) => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [problemTitle, setProblemTitle] = useState('');
   const [loggedInUserId, setLoggedInUserId] = useState(null);
+  const [photoUrl, setPhotoUrl] = useState('');
+
   
 
   const categoryToOrgaoId = {
@@ -82,8 +86,31 @@ const ReportProblemScreen = ({ route }) => {
       quality: 1,
     });
   
-    if (!result.cancelled) {
-      setSelectedImage([...selectedImage, result.uri]);
+    if (!result.canceled) {
+      const formData = new FormData();
+      formData.append('key', '22498dda22523dea4793b5a0c51a849a'); // Substitua YOUR_CLIENT_API_KEY pela sua chave da API imgbb
+      formData.append('image', {
+        uri: result.assets[0].uri,
+        type: 'image/jpeg',
+        name: 'problem.jpg',
+      });
+  
+      try {
+        const response = await axios.post('https://api.imgbb.com/1/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+  
+        if (response.data && response.data.data && response.data.data.url) {
+          setPhotoUrl(response.data.data.url);
+          console.log('Resposta da API ao enviar imagem:', response.data);
+        } else {
+          Alert.alert('Erro ao enviar foto', 'Não foi possível enviar a foto.');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar foto:', error);
+      }
     }
   }
 
@@ -100,8 +127,30 @@ const ReportProblemScreen = ({ route }) => {
       quality: 1,
     });
   
-    if (!result.cancelled) {
-      setSelectedImage([...selectedImage, result.uri]);
+    if (!result.canceled) {
+      const formData = new FormData();
+      formData.append('key', '22498dda22523dea4793b5a0c51a849a'); // Substitua YOUR_CLIENT_API_KEY pela sua chave da API imgbb
+      formData.append('image', {
+        uri: result.assets[0].uri,
+        type: 'image/jpeg',
+        name: 'problem.jpg',
+      });
+  
+      try {
+        const response = await axios.post('https://api.imgbb.com/1/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+  
+        if (response.data && response.data.data && response.data.data.url) {
+          setPhotoUrl(response.data.data.url);
+        } else {
+          Alert.alert('Erro ao enviar foto', 'Não foi possível enviar a foto.');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar foto:', error);
+      }
     }
   }
 
@@ -143,6 +192,7 @@ const ReportProblemScreen = ({ route }) => {
       id_pessoa: loggedInUserId, 
       id_orgao_responsavel: orgaoResponsavelId, 
       id_localizacao: locationId,
+      url_foto: photoUrl
     };
   
     fetch(`${API_URL}/problema`, {
@@ -195,6 +245,10 @@ const ReportProblemScreen = ({ route }) => {
       cidade: address.city,
       estado: address.state,
     };
+
+    if (photoUrl) {
+      locationData.url_foto = photoUrl;
+    }
   
     fetch(`${API_URL}/localizacao`, {
       method: 'POST',

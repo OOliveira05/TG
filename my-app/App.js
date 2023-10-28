@@ -23,7 +23,7 @@ import ProblemDetailsScreen from './ProblemDetailsScreen';
 import ProblemList from './ProblemList';
 import ProblemDetailsList from './ProblemDetailsList';
 
-global.API_URL = 'https://cc0c-2804-18-113b-5943-48e0-3949-5af7-daea.ngrok.io';
+global.API_URL = 'https://57b2-2804-868-d048-895a-20af-7935-25f9-7cbc.ngrok.io';
 
 // Criando uma pilha de navegação usando createStackNavigator
 const Stack = createStackNavigator();
