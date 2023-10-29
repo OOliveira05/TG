@@ -131,7 +131,7 @@ const MapScreen = ({ route }) => {
 
   const getProblemsFromAPI = async () => {
     try {
-      const response = await fetch(`${API_URL}/problema`, {
+      const response = await fetch(`${API_URL}/problema/ativo/verifica `, {
         headers: {
           'Cache-Control': 'no-cache'
         }

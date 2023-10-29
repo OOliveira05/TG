@@ -72,7 +72,7 @@
     
 
     return (
-      <View>
+      <ScrollView contentContainerStyle={styles.container}>
         
         
         <TouchableOpacity onPress={goToMapScreen} style={styles.backButton}>
@@ -91,12 +91,17 @@
               <View style={styles.problemContainer}>
                 <Text style={styles.problemTitle}>{problema.titulo}</Text>
                 <Text>Data de Criação: {problema.data_criacao}</Text>
+                  {problema.ativo === 1 ? (
+                 <Text>Status: Ativo</Text>
+                  ) : (
+                  <Text>Status: Inativo</Text>
+                  )}
               
               </View>
             </TouchableOpacity>
           ))}
         </ScrollView>
-      </View>
+        </ScrollView>
     );
   };
 
