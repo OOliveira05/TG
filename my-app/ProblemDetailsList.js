@@ -38,10 +38,8 @@ const ProblemDetailsList = () => {
       alert('Obrigado pelo retorno!');
     }
     setShowConfirmation(false);
+    setShowResolutionContainer(false);
 
-    if (!resolved) {
-      setShowResolutionContainer(false);
-  }
   };
     
 
@@ -90,8 +88,7 @@ const ProblemDetailsList = () => {
       <View style={styles.container}>
         {problema ? (
           
-          <View style={styles.problemContainer}>
-            
+          <View style={styles.problemContainer}> 
             <Text style={styles.title}>Detalhes do Problema</Text>
             <Text style={styles.label}>Status:</Text>
             <Text style={styles.text}>{problema.ativo === 1 ? 'Ativo' : 'Inativo'}</Text>

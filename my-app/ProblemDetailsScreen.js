@@ -15,7 +15,9 @@ const ProblemDetailsScreen = () => {
       <View style={styles.container}>
         {problem ? (
           <View style={styles.problemContainer}>
-            <Text style={styles.title}>Detalhes do Problema</Text>
+             <Text style={styles.title}>Detalhes do Problema</Text>
+            <Text style={styles.label}>Status:</Text>
+            <Text style={styles.text}>{problem.ativo === 1 ? 'Ativo' : 'Inativo'}</Text>
             <Text style={styles.label}>Título:</Text>
             <Text style={styles.text}>{problem.titulo}</Text>
             <Text style={styles.label}>Descrição:</Text>
@@ -24,9 +26,9 @@ const ProblemDetailsScreen = () => {
             <Text style={styles.text}>{problem.contador_apoio}</Text>
             <Text style={styles.label}>Data de Criação:</Text>
             <Text style={styles.text}>{problem.data_criacao}</Text>
-            <Text style={styles.label}>Nome Pessoa:</Text>
+            <Text style={styles.label}>Quem criou o problema:</Text>
             <Text style={styles.text}>{problem['Nome Pessoa']}</Text>
-            <Text style={styles.label}>Nome Orgao Responsavel:</Text>
+            <Text style={styles.label}>Nome do Orgão Responsável:</Text>
             <Text style={styles.text}>{problem['Nome Orgao Responsavel']}</Text>
             <Text style={styles.label}>CEP:</Text>
             <Text style={styles.text}>{problem.cep}</Text>
@@ -44,8 +46,6 @@ const ProblemDetailsScreen = () => {
             <Text style={styles.text}>{problem.latitude}</Text>
             <Text style={styles.label}>Longitude:</Text>
             <Text style={styles.text}>{problem.longitude}</Text>
-            <Text style={styles.label}>Url foto:</Text>
-            <Text style={styles.text}>{problem.url_foto}</Text>
             <View style={styles.imageContainer}>
         <Text style={styles.label}>Foto:</Text>
         <Image 

@@ -73,7 +73,7 @@
 
     useEffect(() => {
       if (location) {
-        fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.latitude},${location.longitude}&key=AIzaSyCVa4H3UiBHTefbW5FVFkVEUi6tMydyets`)
+        fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.latitude},${location.longitude}&key=AIzaSyAscxb7rTL94vweud-fk8bnTJyV82fm2E0`)
           .then(response => response.json())
           .then(data => {
             const result = data.results[0];

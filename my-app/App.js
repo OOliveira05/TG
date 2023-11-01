@@ -10,7 +10,7 @@ import { Provider as PaperProvider } from 'react-native-paper';
 
 //Importando serviço de geocodificação
 import Geocoder from 'react-native-geocoding';
-Geocoder.init('AIzaSyCVa4H3UiBHTefbW5FVFkVEUi6tMydyets');
+Geocoder.init('AIzaSyAscxb7rTL94vweud-fk8bnTJyV82fm2E0');
 
 
 
@@ -23,7 +23,7 @@ import ProblemDetailsScreen from './ProblemDetailsScreen';
 import ProblemList from './ProblemList';
 import ProblemDetailsList from './ProblemDetailsList';
 
-global.API_URL = 'https://fcdd-2804-868-d048-895a-20af-7935-25f9-7cbc.ngrok.io';
+global.API_URL = 'https://277b-2804-18-113e-21ba-9191-938b-28d7-629d.ngrok.io';
 
 // Criando uma pilha de navegação usando createStackNavigator
 const Stack = createStackNavigator();

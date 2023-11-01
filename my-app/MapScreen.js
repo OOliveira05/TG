@@ -273,7 +273,7 @@ const MapScreen = ({ route }) => {
             });
           }}
           query={{
-            key: 'AIzaSyCVa4H3UiBHTefbW5FVFkVEUi6tMydyets',
+            key: 'AIzaSyAscxb7rTL94vweud-fk8bnTJyV82fm2E0',
             language: 'pt-BR',
             components: 'country:br',
           }}
