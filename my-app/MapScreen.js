@@ -39,10 +39,10 @@ const MapScreen = ({ route }) => {
   const [showButtons, setShowButtons] = useState(false);
 
   const orgaoCores = {
-    1: 'green',   
-    2: 'brown', 
-    3: 'blue', 
-    4: 'yellow', 
+    1: '#00FF00',  //Mato alto 
+    2: '#8B4513',  // Tapa buraco
+    3: '#008B8B',  // SAAE
+    4: '#FFFF00',  //Iluminação
   };
   
 
@@ -254,7 +254,7 @@ const MapScreen = ({ route }) => {
             coordinate={{ latitude: problem.latitude, longitude: problem.longitude }}
             title={problem.titulo}
             description={problem.descricao}
-            pinColor={orgaoCores[problem.id_orgao_responsavel] || 'black'}
+            pinColor={orgaoCores[problem['Id Orgao Responsavel']] || 'black'}
             onPress={() => setSelectedProblem(problem)}
           />
         ))}
@@ -357,6 +357,7 @@ const MapScreen = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   map: {
     ...StyleSheet.absoluteFillObject,
@@ -368,6 +369,7 @@ const styles = StyleSheet.create({
       width: '100%',
       paddingHorizontal: 16,
       zIndex: 2,
+      backgroundColor: 'white',
     },
   },
   reportButton: {

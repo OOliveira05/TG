@@ -257,7 +257,7 @@
     
 
     return (
-      <ScrollView>
+      <ScrollView style={styles.container}>
         <TouchableOpacity onPress={() => navigation.navigate('Map')} style={styles.backButton}>
           <Text style={styles.backButtonText}>Voltar</Text>
         </TouchableOpacity>
@@ -412,6 +412,11 @@
 
 
     const styles = StyleSheet.create({
+
+      container: {
+      backgroundColor: 'white', 
+      },
+
       locationInfo: {
         marginTop: 20,
         marginLeft: 16,

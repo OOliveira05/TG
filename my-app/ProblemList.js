@@ -110,7 +110,10 @@
   };
 
   const styles = StyleSheet.create({
-
+    
+    container: {
+      backgroundColor: 'white', 
+      },
 
     backButton: {
       marginTop: 16,

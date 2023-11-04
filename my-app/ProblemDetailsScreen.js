@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 16,
+    
   },
   problemContainer: {
     backgroundColor: '#fff',
