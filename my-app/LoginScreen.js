@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image} from 'react-native';
 import { useNavigation } from '@react-navigation/native'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -56,12 +56,22 @@ const LoginScreen = ({ route }) => {
     navigation.navigate('Register'); 
   };
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => null,
+    });
+  }, []);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.welcomeText}>Bem Vindo</Text>
+       <Image
+        source={require('./assets/logo.png')}
+        style={styles.logo}
+      />
+      <Text style={styles.welcomeText}>Bem Vindo!</Text>
       <TextInput
         style={styles.input}
-        placeholder="Usuário"
+        placeholder="E-mail"
         value={username}
         onChangeText={(text) => setUsername(text)}
       />
@@ -89,8 +99,10 @@ const LoginScreen = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start', 
     alignItems: 'center',
+    paddingTop: 130, 
+    backgroundColor: 'white', 
     padding: 20,
   },
   welcomeText: {
@@ -130,6 +142,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#8A2BE2',
     textDecorationLine: 'underline',
+  },
+  logo: {
+    width: 300, // Ajuste a largura conforme necessário
+    height: 300, // Ajuste a altura conforme necessário
+    marginBottom: 20,
   },
 });
 

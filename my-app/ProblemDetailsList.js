@@ -65,6 +65,12 @@ const ProblemDetailsList = () => {
     })();
   }, []);
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => null,
+    });
+  }, []);
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <TouchableOpacity onPress={() => navigation.navigate('ProblemList')} style={styles.backButton}>

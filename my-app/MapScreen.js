@@ -38,6 +38,14 @@ const MapScreen = ({ route }) => {
   const [selectedProblem, setSelectedProblem] = useState(null);
   const [showButtons, setShowButtons] = useState(false);
 
+  const orgaoCores = {
+    1: 'green',   
+    2: 'brown', 
+    3: 'blue', 
+    4: 'yellow', 
+  };
+  
+
   const handleMapPress = () => {
     setShowButtons(false);
   };
@@ -194,6 +202,12 @@ const MapScreen = ({ route }) => {
     }
   }, [route.params]);
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => null,
+    });
+  }, []);
+
   return (
     <View style={styles.container}>
       <MapView
@@ -222,6 +236,7 @@ const MapScreen = ({ route }) => {
             coordinate={currentLocation}
             title="Localização Atual"
             description="Você está aqui"
+            pinColor='#8A2BE2'
           />
         )}
         {selectedLocation && (
@@ -229,6 +244,7 @@ const MapScreen = ({ route }) => {
             coordinate={selectedLocation}
             title="Localização Selecionada"
             description="Endereço Pesquisado"
+            pinColor='#8A2BE2'
           />
         )}
 
@@ -238,6 +254,7 @@ const MapScreen = ({ route }) => {
             coordinate={{ latitude: problem.latitude, longitude: problem.longitude }}
             title={problem.titulo}
             description={problem.descricao}
+            pinColor={orgaoCores[problem.id_orgao_responsavel] || 'black'}
             onPress={() => setSelectedProblem(problem)}
           />
         ))}

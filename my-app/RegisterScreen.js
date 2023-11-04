@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
 import axios from 'axios';
 
 
@@ -107,12 +107,24 @@ const RegisterScreen = ({ navigation }) => {
     navigation.navigate('Login'); 
   };
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => null,
+    });
+  }, []);
+
   return (
+
+  
     <View style={styles.container}>
+       <Image
+        source={require('./assets/logo.png')}
+        style={styles.logo}
+      />
       <Text style={styles.welcomeText}>Registro</Text>
       <TextInput
         style={styles.input}
-        placeholder="E-mail"
+        placeholder="E-mail "
         value={email}
         onChangeText={(text) => setEmail(text)}
         keyboardType="email-address"
@@ -178,9 +190,11 @@ const RegisterScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start', 
     alignItems: 'center',
-    padding: 20,
+    paddingTop: 80, 
+    backgroundColor: 'white', 
+    padding: 20, 
   },
   welcomeText: {
     fontSize: 24,
@@ -227,6 +241,14 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     
   },
+
+   logo: {
+      width: 200, 
+      height: 200, 
+      marginBottom: 20,
+    },
+
+  
 });
 
 export default RegisterScreen;

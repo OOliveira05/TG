@@ -69,7 +69,11 @@
       navigation.navigate('ProblemDetailsList', { problema });
     };
 
-    
+    useEffect(() => {
+      navigation.setOptions({
+        headerLeft: () => null,
+      });
+    }, []);
 
     return (
       <ScrollView contentContainerStyle={styles.container}>

@@ -7,6 +7,12 @@ const ProblemDetailsScreen = () => {
   const { problem } = route.params;
   const navigation = useNavigation();
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => null,
+    });
+  }, []);
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <TouchableOpacity onPress={() => navigation.navigate('Map')} style={styles.backButton}>

@@ -248,6 +248,12 @@
       }
     };
 
+    useEffect(() => {
+      navigation.setOptions({
+        headerLeft: () => null,
+      });
+    }, []);
+
     
 
     return (

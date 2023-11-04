@@ -23,7 +23,7 @@ import ProblemDetailsScreen from './ProblemDetailsScreen';
 import ProblemList from './ProblemList';
 import ProblemDetailsList from './ProblemDetailsList';
 
-global.API_URL = 'https://e0e4-2804-389-e4-5428-9191-938b-28d7-629d.ngrok.io';
+global.API_URL = 'https://f9dd-2804-868-d048-78b6-c814-7f2a-b7c3-bb7d.ngrok.io';
 
 // Criando uma pilha de navegação usando createStackNavigator
 const Stack = createStackNavigator();
@@ -38,13 +38,13 @@ const App = () => {
         {/* Cria a pilha de navegação */}
         <Stack.Navigator initialRouteName="Login">
           {/* Define as telas e seus componentes */}
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Map" component={MapScreen} />
+          <Stack.Screen name="Login" component={LoginScreen} options={{headerTitle: '', }}/>
+          <Stack.Screen name="Map" component={MapScreen}  options={{headerTitle: '', }}/>
           <Stack.Screen name="ReportProblem" component={ReportProblemScreen} />
-          <Stack.Screen name="Register" component={RegisterScreen} />
-          <Stack.Screen name="ProblemDetails" component={ProblemDetailsScreen} />
-          <Stack.Screen name="ProblemList" component={ProblemList} />
-          <Stack.Screen name="ProblemDetailsList" component={ProblemDetailsList} />
+          <Stack.Screen name="Register" component={RegisterScreen} options={{headerTitle: '', }}/>
+          <Stack.Screen name="ProblemDetails" component={ProblemDetailsScreen} options={{headerTitle: '', }}/>
+          <Stack.Screen name="ProblemList" component={ProblemList} options={{headerTitle: 'Meus Problemas', }}/>
+          <Stack.Screen name="ProblemDetailsList" component={ProblemDetailsList} options={{headerTitle: '', }}/>
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
