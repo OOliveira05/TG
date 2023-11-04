@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
   },
   locationIcon: {
     position: 'relative',
-    top: 750,
+    top: 700,
     left: 400,
     width: 70,
     height: 70,
@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFA500',
+    backgroundColor: '#8A2BE2',
   },
   viewDetailsButtonText: {
     color: 'white',
@@ -397,14 +397,14 @@ const styles = StyleSheet.create({
   },
   supportButton: {
     position: 'absolute',
-    bottom: 150,
+    bottom: 120,
     left: 20,
     right: 20,
     height: 40,
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFA500',
+    backgroundColor: '#8A2BE2',
   },
   supportButtonText: {
     color: 'white',
